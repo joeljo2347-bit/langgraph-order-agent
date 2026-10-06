@@ -49,8 +49,9 @@ Take "Cancel it, the clinic changed their plan" from the demo above:
    model calls `cancel_order(order_id="SO-1005")`.
 2. **The graph sees a write and stops.** Before anything runs, `interrupt()` saves the run to the
    checkpointer and the API returns an approval card. The order is untouched.
-3. **A person decides.** `POST /approvals` with the card's id resumes the saved run, minutes or
-   hours later, from any server that shares the checkpointer.
+3. **A person decides.** `POST /approvals` with the card's id resumes the saved run, even minutes
+   later. (The demo keeps runs in memory, so it's the same server; a database checkpointer,
+   [#2](https://github.com/joeljo2347-bit/langgraph-order-agent/issues/2), would let any server resume it.)
 4. **Only now does the tool run.** If it fails (say the order already shipped), the tool raises,
    and the change is not counted as done.
 5. **The answer is checked before it's sent.** If the reply claims a change that didn't happen,
