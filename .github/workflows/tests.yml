@@ -23,3 +23,13 @@ jobs:
           docker run -d -p 8000:8000 --name agent order-agent
           for i in $(seq 1 30); do curl -sf localhost:8000/health && exit 0; sleep 1; done
           docker logs agent; exit 1
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install ruff mypy -r requirements.txt -r requirements-dev.txt
+      - run: ruff check .
+      - run: mypy .

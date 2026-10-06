@@ -24,8 +24,8 @@ import re
 from typing import Any, Dict, List, Literal, Optional
 
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
-from langgraph.graph import END, START, StateGraph
+from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolCall, ToolMessage
+from langgraph.graph import START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.types import Command, interrupt
 from typing_extensions import Annotated, TypedDict
@@ -123,7 +123,7 @@ def check(state: State) -> Command[Literal["agent", "__end__"]]:
     """Send a failing answer back to the model once; otherwise finish."""
     problem = None if state["corrected"] else _problem(state)
     if problem is None:
-        return Command(goto=END)
+        return Command(goto="__end__")  # END, spelled as the literal type Command expects
     return Command(goto="agent", update={"messages": [HumanMessage(f"[check] {problem}")],
                                          "corrected": True})
 
@@ -133,7 +133,7 @@ def after_agent(state: State) -> Literal["tools", "check"]:
     return "tools" if isinstance(last, AIMessage) and last.tool_calls else "check"
 
 
-def _approved_ids(calls: List[Dict[str, Any]]) -> set:
+def _approved_ids(calls: List[ToolCall]) -> set:
     """Pause for a person's decision on any writes. The graph stops here and is saved; the caller
     resumes with Command(resume={"approved": [call ids]}). Nothing has run yet."""
     writes = [c for c in calls if c["name"] in WRITE_TOOLS]
@@ -165,7 +165,7 @@ class Nodes:
             reply = AIMessage(text_of(reply) or "I couldn't finish this within the step limit.")
         return {"messages": [reply], "rounds": state["rounds"] + 1}
 
-    def _run_one(self, call: Dict[str, Any], approved: set) -> tuple:
+    def _run_one(self, call: ToolCall, approved: set) -> tuple:
         """(result text, whether it ran) for one tool call."""
         name, call_id = call["name"], call["id"]
         if name not in self.by_name:
@@ -183,7 +183,9 @@ class Nodes:
         return (result if isinstance(result, str) else json.dumps(result)), True
 
     def tools(self, state: State) -> Dict[str, Any]:
-        calls = state["messages"][-1].tool_calls
+        last = state["messages"][-1]
+        assert isinstance(last, AIMessage)  # after_agent routes here only for tool calls
+        calls = last.tool_calls
         approved = _approved_ids(calls)
         used, done, out = list(state["tools_used"]), list(state["actions_done"]), []
         for call in calls:

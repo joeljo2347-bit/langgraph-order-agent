@@ -20,5 +20,6 @@ def load(spec: str = DEFAULT) -> BaseChatModel:
     if provider == "anthropic":
         from langchain_anthropic import ChatAnthropic
 
-        return ChatAnthropic(model=name, max_tokens=2048)  # reads ANTHROPIC_API_KEY
+        # model/max_tokens are pydantic aliases the type stubs don't list. Reads ANTHROPIC_API_KEY.
+        return ChatAnthropic(model=name, max_tokens=2048)  # type: ignore[call-arg]
     raise ValueError(f"Unknown provider {provider!r}; use ollama:<model> or anthropic:<model>.")

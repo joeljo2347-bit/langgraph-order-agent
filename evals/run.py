@@ -16,10 +16,10 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 
 from order_agent import data, models
@@ -42,7 +42,7 @@ def matches(text: str, pattern: str) -> bool:
 
 def transcript(messages) -> List[Dict]:
     """What happened, in order, for a reader outside the code (the blind grader)."""
-    out = []
+    out: List[Dict[str, Any]] = []
     for m in messages:
         if isinstance(m, HumanMessage):
             text = text_of(m)
@@ -64,7 +64,7 @@ def order_book() -> List[Dict]:
 
 def _drive(app, scenario: Dict, cfg: Dict) -> Dict:
     """Send each staff message; answer approval cards as the scenario says."""
-    seen = {"tools": [], "approvals": 0, "decisions": [], "corrected": False, "reply": ""}
+    seen: Dict[str, Any] = {"tools": [], "approvals": 0, "decisions": [], "corrected": False, "reply": ""}
     for text in scenario["turns"]:
         result = app.invoke(turn(text), cfg)
         while "__interrupt__" in result:

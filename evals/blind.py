@@ -69,9 +69,13 @@ def packet() -> None:
     print(f"{len(items)} items -> {OUT / 'packet.md'} + packet.jsonl (key kept in key.json)")
 
 
+def _count(rows, test) -> str:
+    return f"{sum(test(r) for r in rows)}/{len(rows)}"
+
+
 def score() -> None:
     key = json.loads((OUT / "key.json").read_text())
-    grades = [json.loads(l) for l in (OUT / "grades.jsonl").read_text().splitlines() if l.strip()]
+    grades = [json.loads(line) for line in (OUT / "grades.jsonl").read_text().splitlines() if line.strip()]
     missing = set(key) - {g["id"] for g in grades}
     if missing:
         sys.exit(f"The grader skipped {len(missing)} items: {sorted(missing)[:5]}")

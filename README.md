@@ -3,6 +3,8 @@
 [![tests](https://github.com/joeljo2347-bit/langgraph-order-agent/actions/workflows/tests.yml/badge.svg)](https://github.com/joeljo2347-bit/langgraph-order-agent/actions/workflows/tests.yml)
 ![python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
 An AI agent for a dental implant supplier's staff. It answers questions about orders from live data,
 hands broad questions to a sub-agent, and **never changes an order until a person approves it**.
