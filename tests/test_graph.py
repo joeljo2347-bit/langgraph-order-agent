@@ -223,3 +223,16 @@ def test_round_limit_holds_even_if_the_model_keeps_calling_tools():
 def test_small_numbers_are_not_order_ids():
     from order_agent.graph import _unsourced_ids
     assert _unsourced_ids("Orders 1 and 2 of 2024 were fine.", [HumanMessage("hi")]) == []
+
+
+@pytest.mark.parametrize("query,skus", [
+    ("4.5 x 11.5 mm implant", ["IMP-4511"]),        # issue #1: word order and sizes
+    ("implant 4.5x11.5", ["IMP-4511"]),
+    ("IMP-4511", ["IMP-4511"]),
+    ("abutment", ["ABT-STR", "ABT-ANG"]),
+    ("healing cap", ["HEA-45"]),
+    ("titanium crown", []),
+])
+def test_product_lookup_matches_words_and_sizes(query, skus):
+    from order_agent.tools import product_lookup
+    assert [p["sku"] for p in product_lookup.invoke({"query": query})] == skus
