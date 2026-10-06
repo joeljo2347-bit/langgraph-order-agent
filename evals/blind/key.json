@@ -1,0 +1,362 @@
+{
+ "24d0bef3fc": {
+  "model": "gpt-oss_20b",
+  "scenario": "stats",
+  "run": 0
+ },
+ "69162e83c1": {
+  "model": "gpt-oss_20b",
+  "scenario": "stats",
+  "run": 1
+ },
+ "dedeefee5e": {
+  "model": "gpt-oss_20b",
+  "scenario": "stats",
+  "run": 2
+ },
+ "7c80a8a2de": {
+  "model": "gpt-oss_20b",
+  "scenario": "tracking",
+  "run": 0
+ },
+ "564ac90ddb": {
+  "model": "gpt-oss_20b",
+  "scenario": "tracking",
+  "run": 1
+ },
+ "eea267fa42": {
+  "model": "gpt-oss_20b",
+  "scenario": "tracking",
+  "run": 2
+ },
+ "e8e65347ef": {
+  "model": "gpt-oss_20b",
+  "scenario": "stock",
+  "run": 0
+ },
+ "bf5c1058d7": {
+  "model": "gpt-oss_20b",
+  "scenario": "stock",
+  "run": 1
+ },
+ "39e09d549d": {
+  "model": "gpt-oss_20b",
+  "scenario": "stock",
+  "run": 2
+ },
+ "60829355f1": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-research",
+  "run": 0
+ },
+ "3fbb963b39": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-research",
+  "run": 1
+ },
+ "ac7b0f3c3c": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-research",
+  "run": 2
+ },
+ "55ef27b678": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-total",
+  "run": 0
+ },
+ "ae196bee56": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-total",
+  "run": 1
+ },
+ "bd6459e40c": {
+  "model": "gpt-oss_20b",
+  "scenario": "clinic-total",
+  "run": 2
+ },
+ "aa75aa5d73": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-approved",
+  "run": 0
+ },
+ "a27ebf1830": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-approved",
+  "run": 1
+ },
+ "ec51998ce0": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-approved",
+  "run": 2
+ },
+ "0ed674f023": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-declined",
+  "run": 0
+ },
+ "5c937e4a21": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-declined",
+  "run": 1
+ },
+ "b8c49b6c39": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-declined",
+  "run": 2
+ },
+ "00fd50dc5d": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-shipped",
+  "run": 0
+ },
+ "3f813f806a": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-shipped",
+  "run": 1
+ },
+ "2e0e0751c4": {
+  "model": "gpt-oss_20b",
+  "scenario": "cancel-shipped",
+  "run": 2
+ },
+ "7fa1bf2230": {
+  "model": "gpt-oss_20b",
+  "scenario": "mark-shipped",
+  "run": 0
+ },
+ "1ee69ac592": {
+  "model": "gpt-oss_20b",
+  "scenario": "mark-shipped",
+  "run": 1
+ },
+ "0ab041e076": {
+  "model": "gpt-oss_20b",
+  "scenario": "mark-shipped",
+  "run": 2
+ },
+ "0c552a4e6e": {
+  "model": "gpt-oss_20b",
+  "scenario": "follow-up",
+  "run": 0
+ },
+ "05271cd799": {
+  "model": "gpt-oss_20b",
+  "scenario": "follow-up",
+  "run": 1
+ },
+ "30d7c67c44": {
+  "model": "gpt-oss_20b",
+  "scenario": "follow-up",
+  "run": 2
+ },
+ "f3b8fa09f2": {
+  "model": "gpt-oss_20b",
+  "scenario": "injection",
+  "run": 0
+ },
+ "07a30df36a": {
+  "model": "gpt-oss_20b",
+  "scenario": "injection",
+  "run": 1
+ },
+ "e2e7e6d40f": {
+  "model": "gpt-oss_20b",
+  "scenario": "injection",
+  "run": 2
+ },
+ "ca5c9a4994": {
+  "model": "gpt-oss_20b",
+  "scenario": "not-in-data",
+  "run": 0
+ },
+ "5ea6f242fe": {
+  "model": "gpt-oss_20b",
+  "scenario": "not-in-data",
+  "run": 1
+ },
+ "3b066dd0b5": {
+  "model": "gpt-oss_20b",
+  "scenario": "not-in-data",
+  "run": 2
+ },
+ "22b1cf3bb9": {
+  "model": "qwen3_8b",
+  "scenario": "stats",
+  "run": 0
+ },
+ "59efb9753a": {
+  "model": "qwen3_8b",
+  "scenario": "stats",
+  "run": 1
+ },
+ "b6d2e8a4d5": {
+  "model": "qwen3_8b",
+  "scenario": "stats",
+  "run": 2
+ },
+ "fcbfcc7c39": {
+  "model": "qwen3_8b",
+  "scenario": "tracking",
+  "run": 0
+ },
+ "61740a5e1b": {
+  "model": "qwen3_8b",
+  "scenario": "tracking",
+  "run": 1
+ },
+ "3e2863d10b": {
+  "model": "qwen3_8b",
+  "scenario": "tracking",
+  "run": 2
+ },
+ "f5e7b1c73c": {
+  "model": "qwen3_8b",
+  "scenario": "stock",
+  "run": 0
+ },
+ "c7366ac313": {
+  "model": "qwen3_8b",
+  "scenario": "stock",
+  "run": 1
+ },
+ "e4abe3f0ec": {
+  "model": "qwen3_8b",
+  "scenario": "stock",
+  "run": 2
+ },
+ "5782d22a88": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-research",
+  "run": 0
+ },
+ "43e9760a12": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-research",
+  "run": 1
+ },
+ "69fa4a4507": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-research",
+  "run": 2
+ },
+ "6066084b38": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-total",
+  "run": 0
+ },
+ "3ee3312413": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-total",
+  "run": 1
+ },
+ "cc51bd1a1d": {
+  "model": "qwen3_8b",
+  "scenario": "clinic-total",
+  "run": 2
+ },
+ "8a84019e06": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-approved",
+  "run": 0
+ },
+ "766874f48e": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-approved",
+  "run": 1
+ },
+ "f74be2af28": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-approved",
+  "run": 2
+ },
+ "22bbeac848": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-declined",
+  "run": 0
+ },
+ "ce9f4f55f3": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-declined",
+  "run": 1
+ },
+ "26f99ebf7d": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-declined",
+  "run": 2
+ },
+ "4e01a2e5bf": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-shipped",
+  "run": 0
+ },
+ "1a9f3c3fa3": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-shipped",
+  "run": 1
+ },
+ "33519929a3": {
+  "model": "qwen3_8b",
+  "scenario": "cancel-shipped",
+  "run": 2
+ },
+ "996b915111": {
+  "model": "qwen3_8b",
+  "scenario": "mark-shipped",
+  "run": 0
+ },
+ "01aa04c278": {
+  "model": "qwen3_8b",
+  "scenario": "mark-shipped",
+  "run": 1
+ },
+ "9a74533e1e": {
+  "model": "qwen3_8b",
+  "scenario": "mark-shipped",
+  "run": 2
+ },
+ "5aced4293a": {
+  "model": "qwen3_8b",
+  "scenario": "follow-up",
+  "run": 0
+ },
+ "0b109ab56b": {
+  "model": "qwen3_8b",
+  "scenario": "follow-up",
+  "run": 1
+ },
+ "3aecf016d7": {
+  "model": "qwen3_8b",
+  "scenario": "follow-up",
+  "run": 2
+ },
+ "bc054058ce": {
+  "model": "qwen3_8b",
+  "scenario": "injection",
+  "run": 0
+ },
+ "6adddc67e0": {
+  "model": "qwen3_8b",
+  "scenario": "injection",
+  "run": 1
+ },
+ "488d7c73e3": {
+  "model": "qwen3_8b",
+  "scenario": "injection",
+  "run": 2
+ },
+ "9a2adb6404": {
+  "model": "qwen3_8b",
+  "scenario": "not-in-data",
+  "run": 0
+ },
+ "394d950a62": {
+  "model": "qwen3_8b",
+  "scenario": "not-in-data",
+  "run": 1
+ },
+ "743caefec0": {
+  "model": "qwen3_8b",
+  "scenario": "not-in-data",
+  "run": 2
+ }
+}

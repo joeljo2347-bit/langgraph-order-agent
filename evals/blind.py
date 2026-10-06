@@ -4,12 +4,13 @@
     python -m evals.blind score     # evals/blind/grades.jsonl + key.json -> evals/blind/results.md
 
 Each item is one conversation: what staff asked, every tool call and result, the staff member's
-approval decisions, the order book before and after, and the assistant's final reply. Models are
-replaced by letters and items shuffled; key.json maps them back and is never shown to the grader.
+approval decisions, the order book before and after, and the assistant's final reply. Item ids are
+opaque hashes (no model, scenario or run) and items are shuffled; key.json maps them back and is never shown to the grader.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 import sys
@@ -51,11 +52,10 @@ Reply with one JSON object per line for every item id, exactly like:
 def packet() -> None:
     items, key = [], {}
     runs = sorted((HERE / "runs").glob("*.jsonl"))
-    letters = dict(zip([r.stem for r in runs], "ABCDEFGH"))
     for run in runs:
         for line in run.read_text().splitlines():
             row = json.loads(line)
-            item_id = f"{letters[run.stem]}-{row['id']}-{row['run']}"
+            item_id = hashlib.sha256(f"{run.stem}|{row['id']}|{row['run']}".encode()).hexdigest()[:10]
             items.append({"id": item_id, "staff_messages": row["turns"], "record": row["transcript"],
                           "approval_decisions": row["approval_decisions"],
                           "orders_before": row["orders_before"], "orders_after": row["orders_after"],
