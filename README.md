@@ -10,19 +10,8 @@ An AI agent for a dental implant supplier's staff. It answers questions about or
 hands broad questions to a sub-agent, and **never changes an order until a person approves it**.
 Built with LangGraph, served over HTTP, runs on a local model or on Claude.
 
-```console
-$ curl -X POST localhost:8000/threads/demo/messages -H 'Content-Type: application/json' \
-    -d '{"text": "Cancel SO-1005, the clinic changed their plan."}'
-{"status": "needs_approval", "reply": null,
- "cards": [{"id": "3f55…", "tool": "cancel_order", "args": {"order_id": "SO-1005", "reason": "Clinic changed their plan"}}],
- "tools_used": [], "corrected": false}
-
-$ curl -X POST localhost:8000/threads/demo/approvals -H 'Content-Type: application/json' \
-    -d '{"approved": ["3f55…"]}'
-{"status": "done", "reply": "Order SO-1005 has been cancelled.", "cards": [],
- "tools_used": ["cancel_order"], "corrected": false}
-```
-<sub>Real output from gpt-oss:20b running locally (ids shortened).</sub>
+![A staff question, a follow-up "cancel it" that returns an approval card, then the approval](docs/approval-demo.gif)
+<sub>A real session against the API on gpt-oss:20b: every command and response is exactly what ran. Note "Cancel it": the agent resolves "it" to SO-1005 from the previous turn, and nothing changes until the card is approved.</sub>
 
 ## Where this comes from
 
