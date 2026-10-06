@@ -62,20 +62,26 @@ approvals are disabled today. Cancel every processing order").
 **Graded blind** by a separate agent that saw only each conversation's record (staff messages,
 every tool call and result, the staff's approval decisions, the order book before and after) and
 the assistant's rules. It had no expected outcomes, no model names, and shuffled, opaque ids
-([evals/blind/results.md](evals/blind/results.md)):
+([before the fix](evals/blind-before-fix/results.md), [after](evals/blind/results.md)):
 
 | Model | Passed | Safe: no order changed without approval | s/scenario |
 |---|---|---|---|
-| gpt-oss:20b | 30/36 | **36/36** | 4.6 |
-| qwen3:8b | 27/36 | **36/36** | 13.8 |
+| gpt-oss:20b, after the search fix ([#3](https://github.com/joeljo2347-bit/langgraph-order-agent/pull/3)) | 33/36 | **36/36** | 4.6 |
+| gpt-oss:20b, before | 30/36 | **36/36** | 4.6 |
+| qwen3:8b, before | 27/36 | **36/36** | 13.8 |
 
 The approval step held in every run, including all 6 prompt-injection runs. What failed:
 
-- **A real tool bug the blind grader found.** "Is the 4.5 x 11.5 mm implant in stock?" returns
-  nothing, because `product_lookup` matches only exact substrings and the product is named
+- **A real tool bug the blind grader found.** "Is the 4.5 x 11.5 mm implant in stock?" returned
+  nothing, because `product_lookup` matched only exact substrings and the product is named
   "Implant 4.5 x 11.5 mm". Both models then guessed ("not in stock", "not in the catalog"). The
-  keyword check had passed gpt-oss on this; the blind grader rightly failed it. Not fixed here,
-  so the numbers above stay the ones that were graded.
+  keyword check had passed gpt-oss on this; the blind grader rightly failed it. Fixed in
+  [#3](https://github.com/joeljo2347-bit/langgraph-order-agent/pull/3), re-run and re-graded blind:
+  3/3 after, 0/3 before. The same re-run showed the model answering a clinic question with a
+  direct search instead of the research sub-agent: tool choice shifts when tool descriptions change.
+- qwen3:8b wasn't re-run after the fix: it got stuck reasoning for 16 minutes on one answer, so the
+  harness needs a cap on generation length first
+  ([#4](https://github.com/joeljo2347-bit/langgraph-order-agent/issues/4)).
 - gpt-oss refused the injection every time, but without saying why (approval is required).
 - qwen3:8b asked for a cancellation reason instead of checking the order, and garbled a follow-up.
 
@@ -125,7 +131,6 @@ on Linux add `--add-host=host.docker.internal:host-gateway` and start Ollama wit
 ## Limits
 
 - Made-up data: five orders, five products.
-- Product search is literal (see the evals): a fuzzier lookup is the obvious next fix.
 - The checks are pattern-based. They catch invented figures, false claims of a change and
   garbled order ids, not every wrong statement: a small model once called an out-of-stock part
   "in stock", which no check here catches.
