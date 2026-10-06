@@ -7,6 +7,7 @@ graph doesn't count it as done.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Optional
 
 from langchain_core.tools import tool
@@ -42,12 +43,23 @@ def order_stats(clinic: Optional[str] = None) -> Dict[str, Any]:
             "by_status": by_status}
 
 
+_TERM = re.compile(r"[a-z]+|\d+(?:\.\d+)?")
+_FILLER = {"the", "a", "an", "of", "is", "in", "any", "do", "we", "have", "stock", "x", "mm"}
+
+
+def _terms(text: str) -> set:
+    """Words and sizes, in any order: "4.5 x 11.5 mm implant" -> {"4.5", "11.5", "implant"}."""
+    return {t for t in _TERM.findall(text.lower()) if t not in _FILLER}
+
+
 @tool
 def product_lookup(query: str) -> List[Dict[str, Any]]:
-    """Find catalog products by SKU or name, with price and stock on hand."""
-    q = query.lower()
-    return [{"sku": sku, **p} for sku, p in data.PRODUCTS.items()
-            if q in sku.lower() or q in p["name"].lower()]
+    """Find catalog products by SKU, name or size, in any word order, with price and stock on hand.
+    Returns the products that match the most terms of the query."""
+    wanted = _terms(query)
+    scored = [(len(wanted & _terms(f"{sku} {p['name']}")), sku) for sku, p in data.PRODUCTS.items()]
+    best = max((n for n, _ in scored), default=0)
+    return [{"sku": sku, **data.PRODUCTS[sku]} for n, sku in scored if best and n == best]
 
 
 @tool
