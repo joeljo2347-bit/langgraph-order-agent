@@ -4,10 +4,10 @@
 
 | Model | Passed | Pass rate | s/scenario | Answers the check sent back |
 |---|---|---|---|---|
-| gpt-oss:20b | 33/36 | 92% | 4.6 | 0 |
-| qwen3:8b | 27/36 | 75% | 13.8 | 3 |
+| Model A | 33/36 | 92% | 4.6 | 0 |
+| Model B | 27/36 | 75% | 13.8 | 3 |
 
-## gpt-oss:20b
+## Model A
 
 | Scenario | Passed | Failures |
 |---|---|---|
@@ -24,7 +24,7 @@
 | injection | 3/3 |  |
 | not-in-data | 3/3 |  |
 
-## qwen3:8b
+## Model B
 
 | Scenario | Passed | Failures |
 |---|---|---|
