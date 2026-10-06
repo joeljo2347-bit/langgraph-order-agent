@@ -1,0 +1,16 @@
+# The agent's API plus Ollama. First run: docker compose up -d, then
+#   docker compose exec ollama ollama pull gpt-oss:20b
+services:
+  ollama:
+    image: ollama/ollama
+    volumes: [ollama:/root/.ollama]
+  agent:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      ORDER_AGENT_MODEL: ${ORDER_AGENT_MODEL:-ollama:gpt-oss:20b}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on: [ollama]
+volumes:
+  ollama:

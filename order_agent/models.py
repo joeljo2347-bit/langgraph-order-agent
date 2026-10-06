@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from langchain_core.language_models import BaseChatModel
 
 DEFAULT = "ollama:gpt-oss:20b"
@@ -12,7 +14,9 @@ def load(spec: str = DEFAULT) -> BaseChatModel:
     if provider == "ollama":
         from langchain_ollama import ChatOllama
 
-        return ChatOllama(model=name, temperature=0)
+        # OLLAMA_HOST lets a container reach Ollama on the host or in another container.
+        return ChatOllama(model=name, temperature=0,
+                          base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
     if provider == "anthropic":
         from langchain_anthropic import ChatAnthropic
 

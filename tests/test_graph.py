@@ -198,3 +198,28 @@ def test_failed_write_does_not_count_as_done():
     assert out["actions_done"] == []
     assert data.ORDERS[1]["status"] == "shipped"
     assert any("[check]" in str(m.content) for m in out["messages"] if isinstance(m, HumanMessage))
+
+
+def test_true_statements_are_not_claims_of_a_change():
+    from order_agent.graph import _claims_change
+    assert not _claims_change("SO-1002 has been shipped, so it can't be cancelled.")
+    assert not _claims_change("No orders have been cancelled.")
+    assert not _claims_change("SO-1003 has not been changed yet.")
+    assert _claims_change("Done. SO-1003 has been cancelled.")
+    assert _claims_change("I've updated SO-1001 to shipped.")
+
+
+def test_round_limit_holds_even_if_the_model_keeps_calling_tools():
+    _, app, cfg = run([
+        call("search_orders", {}, "c1"),
+        call("order_stats", {}, "c2"),
+        call("search_orders", {}, "c3"),   # still asking for tools after the limit
+    ], max_rounds=2)
+    out = app.invoke(turn("Audit everything"), cfg)
+    last = out["messages"][-1]
+    assert not last.tool_calls and "step limit" in text_of(last)
+
+
+def test_small_numbers_are_not_order_ids():
+    from order_agent.graph import _unsourced_ids
+    assert _unsourced_ids("Orders 1 and 2 of 2024 were fine.", [HumanMessage("hi")]) == []
