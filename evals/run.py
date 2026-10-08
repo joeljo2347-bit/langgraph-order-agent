@@ -2,6 +2,7 @@
 
     python -m evals.run                                   # gpt-oss:20b, 3 runs per scenario
     python -m evals.run --models gpt-oss:20b,qwen3:8b --runs 1
+    python -m evals.run --max-tokens 8192 --timeout 300       # per model call; defaults in models.py
 
 A scenario passes only if every check holds: the right kind of tool ran, a write asked for
 approval first, the order book ends in the right state, and the reply says what it should (and
@@ -96,19 +97,30 @@ def _failures(scenario: Dict, seen: Dict) -> List[str]:
     return out
 
 
+def _capped(messages) -> List[str]:
+    n = sum(isinstance(m, AIMessage) and models.hit_cap(m) for m in messages)
+    return [f"{n} model call(s) hit the token cap"] if n else []
+
+
 def run_scenario(app, scenario: Dict, thread: str) -> Dict:
+    """One scenario. A model call that errors or times out fails this scenario; the run goes on."""
     data.reset()
     before, cfg = order_book(), {"configurable": {"thread_id": thread}}
-    seen = _drive(app, scenario, cfg)
-    failures = _failures(scenario, seen)
+    try:
+        seen, failures = _drive(app, scenario, cfg), []
+    except Exception as e:
+        seen = {"tools": [], "approvals": 0, "decisions": [], "corrected": False, "reply": ""}
+        failures = [f"model call failed: {type(e).__name__}"]
+    messages = app.get_state(cfg).values.get("messages", [])
+    failures += _capped(messages) + (_failures(scenario, seen) if not failures else [])
     return {"passed": not failures, "failures": failures, "tools": seen["tools"],
             "approvals": seen["approvals"], "corrected": seen["corrected"], "reply": seen["reply"],
-            "turns": scenario["turns"], "transcript": transcript(app.get_state(cfg).values["messages"]),
+            "turns": scenario["turns"], "transcript": transcript(messages),
             "approval_decisions": seen["decisions"], "orders_before": before, "orders_after": order_book()}
 
 
-def run_model(model: str, scenarios: List[Dict], runs: int) -> List[Dict]:
-    app = build_graph(models.load(f"ollama:{model}"), checkpointer=MemorySaver())
+def run_model(model: str, scenarios: List[Dict], runs: int, **limits) -> List[Dict]:
+    app = build_graph(models.load(f"ollama:{model}", **limits), checkpointer=MemorySaver())
     rows = []
     for s in scenarios:
         for r in range(runs):
@@ -143,9 +155,11 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--models", default=models.DEFAULT.split(":", 1)[1])
     p.add_argument("--runs", type=int, default=3)
+    p.add_argument("--max-tokens", type=int, default=models.MAX_TOKENS, help="token cap per model call")
+    p.add_argument("--timeout", type=float, default=models.TIMEOUT_S, help="seconds to wait per model call")
     a = p.parse_args()
     scenarios = [json.loads(line) for line in (HERE / "scenarios.jsonl").read_text().splitlines() if line]
-    results = {m: run_model(m, scenarios, a.runs) for m in a.models.split(",")}
+    results = {m: run_model(m, scenarios, a.runs, max_tokens=a.max_tokens, timeout=a.timeout) for m in a.models.split(",")}
     (HERE / "results.md").write_text(report(results, scenarios, a.runs))
     print(f"Wrote {HERE / 'results.md'}")
 

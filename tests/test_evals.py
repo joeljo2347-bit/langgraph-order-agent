@@ -29,3 +29,28 @@ def test_failures_are_named():
                 "final_status": {"SO-1001": "shipped"}}
     out = run_scenario(app, scenario, "t")
     assert out["failures"] == ["no approval was asked for", "SO-1001 is processing, expected shipped"]
+
+
+class StuckModel(ScriptedModel):
+    """Times out on its first call, as a stuck generation does at the client's timeout."""
+
+    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        if not self.seen:
+            self.seen.append(messages)
+            raise TimeoutError("read timed out")
+        return super()._generate(messages, stop, run_manager, **kwargs)
+
+
+def test_a_stuck_call_fails_one_scenario_and_the_run_goes_on():
+    app = build_graph(StuckModel(script=[AIMessage("SO-1001 is processing.")]), checkpointer=MemorySaver())
+    scenario = {"id": "s", "turns": ["Where is SO-1001?"], "contains": ["processing"]}
+    stuck = run_scenario(app, scenario, "t1")
+    assert not stuck["passed"] and stuck["failures"] == ["model call failed: TimeoutError"]
+    assert run_scenario(app, scenario, "t2")["passed"]
+
+
+def test_a_reply_cut_off_at_the_cap_fails_the_scenario():
+    cut = AIMessage("SO-1001 is processing and", response_metadata={"done_reason": "length"})
+    app = build_graph(ScriptedModel(script=[cut]), checkpointer=MemorySaver())
+    out = run_scenario(app, {"id": "s", "turns": ["Where is SO-1001?"], "contains": ["processing"]}, "t")
+    assert out["failures"] == ["1 model call(s) hit the token cap"]
