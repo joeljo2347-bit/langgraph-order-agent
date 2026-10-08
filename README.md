@@ -113,7 +113,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -r requiremen
 ```
 
 The agent needs a model: a local model server or a hosted API, picked with `ORDER_AGENT_MODEL`
-(see `order_agent/models.py`). `docker compose up` starts the API together with a model server.
+(see `order_agent/models.py`), e.g. `ORDER_AGENT_MODEL=ollama:<model> .venv/bin/python -m order_agent.cli`;
+the CLI's `--model` overrides it. `docker compose up` starts the API together with a model server.
+`.venv/bin/python -m evals.run --runs 1` runs the eval scenarios once each and rewrites `evals/results.md`.
 
 ## Decisions and tradeoffs
 

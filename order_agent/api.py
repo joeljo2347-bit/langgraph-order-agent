@@ -14,7 +14,6 @@ in the checkpointer, so the approval can come minutes later, from another reques
 
 from __future__ import annotations
 
-import os
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, FastAPI, HTTPException, Request
@@ -115,7 +114,7 @@ def get_thread(thread_id: str, request: Request) -> Dict[str, Any]:
 
 
 def create_app(model: Optional[BaseChatModel] = None) -> FastAPI:
-    model = model or models.load(os.environ.get("ORDER_AGENT_MODEL", models.DEFAULT))
+    model = model or models.load(models.configured())
     app = FastAPI(title="Order agent", version="1.0")
     app.state.graph = build_graph(model, checkpointer=MemorySaver())
     app.include_router(router)

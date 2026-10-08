@@ -12,6 +12,12 @@ DEFAULT = "ollama:gpt-oss:20b"
 MAX_TOKENS = 4096
 TIMEOUT_S = 120.0
 MIN_TOKENS = 512  # below this, ordinary replies would be cut off
+ENV = "ORDER_AGENT_MODEL"
+
+
+def configured() -> str:
+    """The model the API and the CLI use: ORDER_AGENT_MODEL if set, else the default."""
+    return os.environ.get(ENV) or DEFAULT
 
 
 def load(spec: str = DEFAULT, max_tokens: int = MAX_TOKENS, timeout: float = TIMEOUT_S) -> BaseChatModel:

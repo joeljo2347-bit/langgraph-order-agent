@@ -32,3 +32,23 @@ def test_hit_cap_reads_either_stop_reason():
     assert models.hit_cap(AIMessage("cut", response_metadata={"stop_reason": "max_tokens"}))
     assert not models.hit_cap(AIMessage("done", response_metadata={"done_reason": "stop"}))
     assert not models.hit_cap(AIMessage("scripted"))
+
+
+def test_the_env_var_picks_the_model(monkeypatch):
+    monkeypatch.setenv(models.ENV, "ollama:other:8b")
+    assert models.configured() == "ollama:other:8b"
+    monkeypatch.delenv(models.ENV)
+    assert models.configured() == models.DEFAULT
+
+
+def test_the_cli_follows_the_env_var(monkeypatch):
+    from order_agent import cli
+
+    seen = []
+    monkeypatch.setenv(models.ENV, "ollama:other:8b")
+    monkeypatch.setattr("sys.argv", ["cli"])
+    monkeypatch.setattr(models, "load", lambda spec: seen.append(spec) or object())
+    monkeypatch.setattr(cli, "build_graph", lambda *a, **k: None)
+    monkeypatch.setattr("builtins.input", lambda *_: (_ for _ in ()).throw(EOFError))
+    cli.main()
+    assert seen == ["ollama:other:8b"]

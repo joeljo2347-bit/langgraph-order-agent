@@ -1,6 +1,6 @@
 """Chat with the order agent in the terminal.
 
-    python -m order_agent.cli                         # local gpt-oss:20b through Ollama
+    python -m order_agent.cli                         # ORDER_AGENT_MODEL, else local gpt-oss:20b through Ollama
     python -m order_agent.cli --model anthropic:claude-sonnet-5-5
 
 Writes stop for your approval. The conversation is checkpointed per thread, so follow-ups work.
@@ -31,7 +31,7 @@ def approve(cards):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default=models.DEFAULT)
+    parser.add_argument("--model", default=models.configured(), help="overrides ORDER_AGENT_MODEL")
     args = parser.parse_args()
 
     app = build_graph(models.load(args.model), checkpointer=MemorySaver())
