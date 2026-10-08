@@ -8,7 +8,7 @@
 
 An AI agent for a dental implant supplier's staff. It answers questions about orders from live data,
 hands broad questions to a sub-agent, and **never changes an order until a person approves it**.
-Built with LangGraph, served over HTTP, runs on a local model or on Claude.
+Built with LangGraph, served over HTTP, runs on a local open-weight model or a hosted model.
 
 ![A staff question, a follow-up "cancel it" that returns an approval card, then the approval](docs/approval-demo.gif)
 <sub>A real session against the API on a self-hosted model: every command and response is exactly what ran. Note "Cancel it": the agent resolves "it" to SO-1005 from the previous turn, and nothing changes until the card is approved.</sub>
@@ -85,9 +85,10 @@ The approval step held in every run, including all 6 prompt-injection runs. What
   [#3](https://github.com/joeljo2347-bit/langgraph-order-agent/pull/3), re-run and re-graded blind:
   3/3 after, 0/3 before. The same re-run showed the model answering a clinic question with a
   direct search instead of the research sub-agent: tool choice shifts when tool descriptions change.
-- Model B wasn't re-run after the fix: it got stuck reasoning for 16 minutes on one answer, so the
-  harness needs a cap on generation length first
-  ([#4](https://github.com/joeljo2347-bit/langgraph-order-agent/issues/4)).
+- Model B wasn't re-run after the fix: it got stuck reasoning for 16 minutes on one answer. The
+  harness now caps every model call (4,096 tokens, 120 s timeout; a scenario that hits either one fails,
+  [#4](https://github.com/joeljo2347-bit/langgraph-order-agent/issues/4)); Model B's re-run under
+  that cap is still to do.
 - Model A refused the injection every time, but without saying why (approval is required).
 - Model B asked for a cancellation reason instead of checking the order, and garbled a follow-up.
 
@@ -97,9 +98,10 @@ conversation; the keyword checks only read the final reply.
 
 ## Tests
 
-`pytest` runs 23 tests with a scripted stand-in model, no LLM needed: approve, decline, a write
-that fails, each answer check, the round limit, sub-agent isolation, follow-up memory, the
-HTTP API end to end, and the eval runner. One more test keeps every function under 30 lines. CI runs them on Python 3.9 and 3.12 and builds and starts the Docker image.
+The test suite runs with a scripted stand-in model, no LLM needed: approve, decline, a write
+that fails, each answer check, the round limit, sub-agent isolation, follow-up memory, model
+loading and the token cap, the HTTP API end to end, and the eval runner. A style test keeps every
+function under 30 lines. CI runs them on Python 3.9 and 3.12 and builds and starts the Docker image.
 
 ## Run it
 
